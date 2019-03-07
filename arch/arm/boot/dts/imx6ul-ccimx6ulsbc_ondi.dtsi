@@ -9,7 +9,10 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
  
- /* Copy from imx6ul-ccimx6ulsbc.dtsi */
+ /* 2019-03-07 - Copy from imx6ul-ccimx6ulsbc.dtsi 
+ *  2019-03-07 - activation fec1 and fec2 (Eth), pwm5 (LCD backligth), uart3 (RS232), uart5 (USB console), usbotg1, usbotg2, usdhc2 (microSD/eMMC)
+ *               modification lcdif
+ */
 
 / {
 	model = "Digi International ConnectCore 6UL SBC.";
@@ -93,7 +96,7 @@
 	phy-reset-gpios = <&mca_gpio 7 GPIO_ACTIVE_LOW>;
 	phy-reset-duration = <26>;
 	digi,phy-reset-in-suspend;
-	status = "disabled";
+	status = "okay";
 };
 
 &fec2 {
@@ -106,7 +109,7 @@
 	phy-reset-gpios = <&gpio5 6 GPIO_ACTIVE_LOW>;
 	phy-reset-duration = <26>;
 	digi,phy-reset-in-suspend;
-	status = "disabled";
+	status = "okay";
 
 	/*
 	 * The MDIO bus is shared between ENET1 and ENET2. If you only want
@@ -261,8 +264,9 @@
 		     &pinctrl_lcdif_clken
 		     &pinctrl_lcdif_hvsync>;
 	lcd-supply = <&ldo4_ext>;       /* BU90T82 LVDS bridge power */
-	display = <&g101evn010>;
-	status = "disabled";
+	/*display = <&g101evn010>;*/
+	display = <&dt070btft>;
+	status = "okay";
 
 	f07a0102: display@0 {
 		bits-per-pixel = <16>;
@@ -333,6 +337,30 @@
 			};
 		};
 	};
+
+	dt070btft: display@3 {
+		bits-per-pixel = <16>;
+		bus-width = <18>;
+
+		display-timings {
+			native-mode = <&timing4>;
+			timing4: timing4 {
+				clock-frequency = <51200000>;
+				hactive = <1024>;
+				vactive = <600>;
+				hfront-porch = <0>;
+				hback-porch = <0>;
+				hsync-len = <320>;
+				vback-porch = <0>;
+				vfront-porch = <0>;
+				vsync-len = <35>;
+				hsync-active = <0>;
+				vsync-active = <0>;
+				de-active = <1>;
+				pixelclk-active = <0>;
+			};
+		};
+	};
 };
 
 /* Powers BU90T82 LVDS bridge at 1.8V */
@@ -366,7 +394,7 @@
 	pinctrl-0 = <&pinctrl_pwm5>;
 	clocks = <&clks IMX6UL_CLK_PWM5>,
 		 <&clks IMX6UL_CLK_PWM5>;
-	status = "disabled";
+	status = "okay";
 };
 
 &pwm6 {
@@ -402,9 +430,14 @@
 };
 
 /* UART3 */
-&uart3 {
+/*&uart3 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_uart3_2wires>;
+	status = "disabled";
+};*/
+&uart3 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_uart3_4wires>;
 	status = "disabled";
 };
 
@@ -412,7 +445,7 @@
 &uart5 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_uart5>;
-	status = "disabled";
+	status = "okay";
 };
 
 &usbotg1 {
@@ -420,14 +453,14 @@
 	vbus-supply = <&reg_usb_otg1_vbus>;
 	pinctrl-0 = <&pinctrl_usbotg1>;
 	digi,power-line-active-high;
-	status = "disabled";
+	status = "okay";
 };
 
 &usbotg2 {
 	dr_mode = "host";
 	digi,power-line-active-high;
 	disable-over-current;
-	status = "disabled";
+	status = "okay";
 };
 
 /* USDHC2 (microSD/eMMC) */
@@ -435,7 +468,7 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_usdhc2>;
 	no-1-8-v;
-	status = "disabled";
+	status = "okay";
 };
 
 &iomuxc {
